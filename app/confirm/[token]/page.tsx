@@ -1,6 +1,6 @@
 // app/confirm/[token]/page.tsx
 
-export const runtime = "nodejs"; // 🔴 REQUIRED // 
+export const runtime = "nodejs"; // REQUIRED for service role access
 
 import Form from "@/components/Form";
 import { createClient } from "@supabase/supabase-js";
@@ -14,7 +14,7 @@ interface PageProps {
 export default async function Page({ params }: PageProps) {
   const token = params?.token?.trim();
 
-  // 1️⃣ Basic route-level validation
+  // 1️⃣ Basic validation (URL-level)
   if (!token) {
     return (
       <div className="text-center text-red-600 text-xl py-10">
@@ -23,10 +23,10 @@ export default async function Page({ params }: PageProps) {
     );
   }
 
-  // 2️⃣ Create Supabase server client
+  // 2️⃣ SERVER-ONLY Supabase client (SERVICE ROLE — bypasses RLS)
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY! // ✅ MUST BE SERVICE ROLE
   );
 
   // 3️⃣ Validate token against DB
@@ -34,11 +34,11 @@ export default async function Page({ params }: PageProps) {
     .from("university_participation")
     .select("invite_token")
     .eq("invite_token", token)
-    .limit(1)
     .maybeSingle();
 
-  // 4️⃣ Handle invalid / expired token
+  // 4️⃣ Invalid / expired token
   if (error || !data) {
+    console.error("Token validation failed:", error);
     return (
       <div className="text-center text-red-600 text-xl py-10">
         Invalid or expired invite token. Please use the official confirmation link again.
