@@ -3,7 +3,7 @@
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export default function Page({
+export default async function Page({
   params,
   searchParams,
 }: {
