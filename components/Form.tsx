@@ -326,20 +326,22 @@ export default function Form({ token }: FormProps) {
           <section className="space-y-4">
             <h2 className="section-title">Submitter Details (optional)</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 
-gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input name="submitter_name" placeholder="Submitter Name" className="form-input" />
               <input name="submitter_contact" placeholder="Submitter Contact" className="form-input" />
             </div>
           </section>
 
-          {/* Recruitment */}
+          {/* Recruitment Information - UPDATED */}
           <section className="space-y-6">
             <h2 className="section-title">Recruitment Information</h2>
 
+            {/* Levels Recruiting For */}
             <div>
-              <p className="font-semibold text-sm">Levels Recruiting For *</p>
-              <div className="options-grid mt-3">
+              <label className="block text-base font-bold text-gray-900 mb-3">
+                Levels Recruiting For <span className="text-red-500">*</span>
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {LEVELS.map((lvl) => (
                   <Pill
                     key={lvl}
@@ -353,9 +355,12 @@ gap-4">
               </div>
             </div>
 
+            {/* Events You Will Attend */}
             <div>
-              <p className="font-semibold text-sm">Events You Will Attend *</p>
-              <div className="options-grid mt-3">
+              <label className="block text-base font-bold text-gray-900 mb-3">
+                Events You Will Attend <span className="text-red-500">*</span>
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {EVENTS.map((ev) => (
                   <Pill
                     key={ev}
@@ -369,9 +374,12 @@ gap-4">
               </div>
             </div>
 
+            {/* Preferred Time Slots */}
             <div>
-              <p className="font-semibold text-sm">Preferred Time Slots (optional)</p>
-              <div className="options-grid mt-3">
+              <label className="block text-base font-bold text-gray-900 mb-3">
+                Preferred Time Slots <span className="text-gray-500 font-normal text-sm">(optional)</span>
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {SLOTS.map((slot) => (
                   <Pill
                     key={slot}
@@ -384,24 +392,35 @@ gap-4">
                 ))}
               </div>
             </div>
+
+            {/* Highlights - UPDATED */}
+            <div>
+              <label className="block text-base font-bold text-gray-900 mb-2">
+                Highlights
+              </label>
+              <textarea
+                name="highlights"
+                placeholder="Paste your focus areas"
+                rows={4}
+                className="form-textarea"
+              />
+            </div>
+
+            {/* Deposit Link - UPDATED */}
+            <div>
+              <label className="block text-base font-bold text-gray-900 mb-2">
+                Deposit Link
+              </label>
+              <input
+                name="deposit_link"
+                type="url"
+                placeholder="Paste your official application or deposit payment link"
+                className="form-input"
+              />
+            </div>
           </section>
 
-          {/* Notes */}
-          <section className="space-y-4">
-            <textarea
-              name="highlights"
-              placeholder="Paste highlights or focus areas"
-              className="form-textarea"
-            />
-
-            <input
-              name="deposit_link"
-              placeholder="Deposit Link (if any)"
-              className="form-input"
-            />
-          </section>
-
-          {/* Documents */}
+          {/* Documents - UPDATED */}
           <section className="space-y-4">
             <h2 className="section-title">Documents</h2>
 
@@ -412,15 +431,30 @@ gap-4">
             />
 
             <FileUpload
-              label="Upload Additional Documents"
+              label="Upload Additional Documents (you can upload multiple one-by-one)"
               accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,image/*"
               multiple
               onSelect={handleExtraDocSelect}
             />
+            {extraDocsFiles.length > 0 && (
+              <p className="text-sm text-gray-600 mt-2">
+                {extraDocsFiles.length} file(s) uploaded
+              </p>
+            )}
           </section>
 
-          <label className="font-semibold text-gray-800">Remarks</label>
-          <textarea name="remarks" className="form-textarea" />
+          {/* Remarks - UPDATED */}
+          <section>
+            <label className="block text-base font-bold text-gray-900 mb-2">
+              Remarks
+            </label>
+            <textarea
+              name="remarks"
+              placeholder="Paste your additional remarks"
+              rows={4}
+              className="form-textarea"
+            />
+          </section>
 
           {/* Consent */}
           <label className="flex items-start gap-3 text-gray-700">

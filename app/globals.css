@@ -63,6 +63,10 @@ html { scroll-behavior: smooth; }
   box-shadow: 0 12px 36px rgba(15,98,254,0.08);
   outline: none;
 }
+.form-input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
 
 .form-textarea {
   @apply block w-full rounded-[10px] border px-4 py-4 text-sm transition;
@@ -70,11 +74,16 @@ html { scroll-behavior: smooth; }
   min-height: 110px;
   border-color: var(--border);
   color: #0f172a;
+  resize: vertical;
 }
 .form-textarea:focus {
   border-color: var(--brand-primary);
   box-shadow: 0 12px 36px rgba(15,98,254,0.08);
   outline: none;
+}
+.form-textarea::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
 }
 
 /* ---------------------------------------------------------
@@ -114,9 +123,9 @@ html { scroll-behavior: smooth; }
 
 /* Pill Label Text — LIGHTEST among the three layers */
 .pill-label {
-  font-weight: 500;
+  font-weight: 400;
   font-size: 0.95rem;
-  color: #0f172a;
+  color: #374151;
 }
 
 /* ---------------------------------------------------------
@@ -132,10 +141,14 @@ html { scroll-behavior: smooth; }
   transform: translateY(-2px);
   box-shadow: 0 16px 40px rgba(15,98,254,0.18);
 }
+.modern-btn-primary:active {
+  transform: translateY(0);
+}
 .modern-btn-primary:disabled {
   opacity: 0.6;
   transform: none;
   box-shadow: none;
+  cursor: not-allowed;
 }
 
 .modern-btn-ghost {
@@ -145,83 +158,134 @@ html { scroll-behavior: smooth; }
 }
 
 /* ---------------------------------------------------------
-   MULTI-SELECT PILL SYSTEM
+   MULTI-SELECT PILL SYSTEM - FIXED ALIGNMENT
 --------------------------------------------------------- */
 .options-grid {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.75rem;
   grid-template-columns: 1fr;
+  width: 100%;
 }
+
+/* Responsive grid for different field types */
 @media (min-width: 640px) {
   .options-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
+@media (min-width: 1024px) {
+  /* 4 columns for Levels (4 items) */
+  .options-grid.grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  /* 3 columns for Events and Time Slots (3 items each) */
+  .options-grid.grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .checkbox-pill {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.78rem 1rem;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(15,23,42,0.08);
+  border: 1.5px solid #e5e7eb;
   background: var(--card-bg);
   cursor: pointer;
   user-select: none;
-
-  /* Updated hierarchy — lighter than field labels */
-  font-weight: 500;
-
-  color: #0f172a;
-  transition: all .18s ease;
-  min-height: 54px;
+  
+  /* Lighter font weight than labels */
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: #374151;
+  
+  transition: all 0.2s ease;
+  min-height: 56px;
+  position: relative;
+  width: 100%;
 }
 
 /* Hover effect */
 .checkbox-pill:hover {
-  box-shadow: 0 10px 26px rgba(2,6,23,0.05);
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(2,6,23,0.06);
   transform: translateY(-1px);
 }
 
-/* Leading square */
-.checkbox-pill > span:first-child {
-  width: 1.5rem;
-  height: 1.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+/* Checkbox square indicator */
+.checkbox-pill::before {
+  content: '';
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
   border-radius: 4px;
-  border: 1px solid #d1d5db;
+  border: 2px solid #d1d5db;
   background: #ffffff;
-  transition: all .16s ease;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-/* Animated checkmark */
-.checkbox-pill svg {
-  width: 13px;
-  height: 10px;
-  stroke: white;
+/* Checkmark inside checkbox */
+.checkbox-pill::after {
+  content: '';
+  position: absolute;
+  left: 1.25rem;
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+  background-size: 12px 12px;
+  background-position: center;
+  background-repeat: no-repeat;
   opacity: 0;
-  transform: scale(0.7);
-  transition: opacity .15s ease, transform .15s ease;
+  transform: scale(0.5);
+  transition: all 0.2s ease;
 }
 
-/* ACTIVE state */
+/* ACTIVE/CHECKED state */
 .checkbox-pill.checked {
-  background: linear-gradient(90deg, rgba(15,98,254,0.07), rgba(15,98,254,0.02));
-  border-color: rgba(15,98,254,0.22);
-  box-shadow: 0 12px 28px rgba(15,98,254,0.08);
+  background: linear-gradient(135deg, rgba(15,98,254,0.05), rgba(15,98,254,0.02));
+  border-color: var(--brand-primary);
+  box-shadow: 0 4px 16px rgba(15,98,254,0.12);
+  color: #1e40af;
 }
 
-.checkbox-pill.checked > span:first-child {
+.checkbox-pill.checked::before {
   background: var(--brand-primary);
   border-color: var(--brand-primary);
   transform: scale(1.05);
 }
 
-.checkbox-pill.checked svg {
+.checkbox-pill.checked::after {
   opacity: 1;
   transform: scale(1);
+}
+
+/* Remove old SVG styles that are no longer needed */
+.checkbox-pill > span:first-child {
+  /* This is now handled by ::before pseudo-element */
+  display: none;
+}
+
+.checkbox-pill svg {
+  /* This is now handled by ::after pseudo-element */
+  display: none;
+}
+
+/* Pill label text styling */
+.pill-label {
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.checkbox-pill.checked .pill-label {
+  color: #1e40af;
+  font-weight: 500;
 }
 
 /* ---------------------------------------------------------
@@ -239,6 +303,7 @@ html { scroll-behavior: smooth; }
 .refined-upload-card:hover {
   box-shadow: 0 14px 32px rgba(2,6,23,0.06);
   transform: translateY(-2px);
+  border-color: rgba(15,23,42,0.12);
 }
 .refined-upload-card.drag-active {
   border-color: var(--brand-primary);
@@ -258,15 +323,26 @@ html { scroll-behavior: smooth; }
 
 /* Buttons */
 .browse-btn {
-  @apply px-3 py-2 rounded-md text-sm text-white transition shadow;
+  @apply px-4 py-2 rounded-md text-sm text-white transition shadow;
   background: var(--brand-primary);
+  font-weight: 500;
 }
-.browse-btn:hover { background: var(--brand-primary-600); }
+.browse-btn:hover {
+  background: var(--brand-primary-600);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15,98,254,0.2);
+}
+.browse-btn:active {
+  transform: translateY(0);
+}
 
 .remove-btn {
   @apply p-2 rounded-full bg-red-50 text-red-600 transition;
 }
-.remove-btn:hover { background: #ffe2e2; }
+.remove-btn:hover {
+  background: #fee2e2;
+  transform: scale(1.05);
+}
 
 /* ---------------------------------------------------------
    MOTION UTILITIES
@@ -277,6 +353,15 @@ html { scroll-behavior: smooth; }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
+}
+
+.animate-pop {
+  animation: pop 0.3s ease-out;
+}
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .hover-lift {
@@ -301,6 +386,26 @@ html { scroll-behavior: smooth; }
 @media (min-width: 1024px) {
   .form-container { padding: 3rem; }
   .section-title { font-size: 1.55rem; }
+}
+
+/* Focus visible for keyboard navigation */
+.checkbox-pill:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+.form-input:focus-visible,
+.form-textarea:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .form-container {
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
 }
 
 /* END OF FILE */
