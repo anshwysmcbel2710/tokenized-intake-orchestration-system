@@ -1,4 +1,3 @@
-// app/confirm/[token]/page.tsx  //
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
