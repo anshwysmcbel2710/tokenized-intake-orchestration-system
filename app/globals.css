@@ -116,7 +116,7 @@ html { scroll-behavior: smooth; }
   box-shadow: 0 12px 42px var(--soft-shadow);
 }
 
-/* Typography Hierarchy (FIXED) */
+/* Typography Hierarchy */
 
 /* Main Section Title — STRONGEST hierarchy */
 .section-title {
@@ -386,17 +386,31 @@ html { scroll-behavior: smooth; }
 /* ---------------------------------------------------------
    SCROLLBAR
 --------------------------------------------------------- */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: rgba(2,6,23,0.03); border-radius: 6px; }
-::-webkit-scrollbar-thumb { background: rgba(15,23,42,0.15); border-radius: 6px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(15,98,254,0.18); }
+::-webkit-scrollbar { 
+  width: 8px; 
+}
+::-webkit-scrollbar-track { 
+  background: rgba(2,6,23,0.03); 
+  border-radius: 6px; 
+}
+::-webkit-scrollbar-thumb { 
+  background: rgba(15,23,42,0.15); 
+  border-radius: 6px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+  background: rgba(15,98,254,0.18); 
+}
 
 /* ---------------------------------------------------------
    RESPONSIVE
 --------------------------------------------------------- */
 @media (min-width: 1024px) {
-  .form-container { padding: 3rem; }
-  .section-title { font-size: 1.75rem; }
+  .form-container { 
+    padding: 3rem; 
+  }
+  .section-title { 
+    font-size: 1.75rem; 
+  }
 }
 
 /* Focus visible for all interactive elements */
@@ -404,3 +418,14 @@ html { scroll-behavior: smooth; }
 .form-textarea:focus-visible {
   outline: 2px solid var(--brand-primary);
   outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .form-container {
+    box-shadow: none;
+    border: 1px solid var(--border);
+  }
+}
+
+/* END OF FILE */
