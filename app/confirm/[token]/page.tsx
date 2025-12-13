@@ -1,5 +1,7 @@
 // app/confirm/[token]/page.tsx
 
+export const runtime = "nodejs"; // 🔴 REQUIRED // 
+
 import Form from "@/components/Form";
 import { createClient } from "@supabase/supabase-js";
 
