@@ -45,8 +45,8 @@ export default function Form({ token }: FormProps) {
   const [slotsSelected, setSlotsSelected] = useState<string[]>([]);
 
   const LEVELS = ["Diploma", "Certificate", "Bachelors", "Masters"];
-  const EVENTS = ["Webinar", "In-person Fair", "Online Fair"];
-  const SLOTS = ["10 AM - 11 AM", "11 AM - 12 PM", "2 PM - 3 PM"];
+  const EVENTS = ["Webinar", "Online Fair", "In-person Fair"];
+  const SLOTS = ["10:00 AM – 11:00 AM", "11:00 AM – 12:00 PM", "2:00 PM – 3:00 PM", "3:00 PM – 4:00 PM"];
 
   // Toggle helper
   function toggleItem(setter: any, value: string) {
@@ -252,7 +252,7 @@ export default function Form({ token }: FormProps) {
   /* ----------------------------------------------------------
      Pill UI Component
   ---------------------------------------------------------- */
-  function Pill({ label, active, onClick, name, value }: any) {
+  function Pill({ label, active, onClick }: any) {
     return (
       <button
         type="button"
@@ -261,9 +261,6 @@ export default function Form({ token }: FormProps) {
         onMouseDown={(e) => e.preventDefault()}
       >
         <span className="pill-label">{label}</span>
-        {active && name && value ? (
-          <input type="hidden" name={`${name}[]`} value={value} />
-        ) : null}
       </button>
     );
   }
@@ -332,72 +329,76 @@ export default function Form({ token }: FormProps) {
             </div>
           </section>
 
-          {/* Recruitment Information - UPDATED */}
+          {/* Recruitment Information - FIXED */}
           <section className="space-y-6">
             <h2 className="section-title">Recruitment Information</h2>
 
             {/* Levels Recruiting For */}
             <div>
-              <label className="block text-base font-bold text-gray-900 mb-3">
+              <label className="field-label">
                 Levels Recruiting For <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="options-grid options-grid-4">
                 {LEVELS.map((lvl) => (
                   <Pill
                     key={lvl}
                     label={lvl}
                     active={levelsSelected.includes(lvl)}
                     onClick={() => toggleItem(setLevelsSelected, lvl)}
-                    name="levels_recruiting_for"
-                    value={lvl}
                   />
                 ))}
               </div>
+              {/* Hidden inputs for form submission */}
+              {levelsSelected.map((lvl) => (
+                <input key={lvl} type="hidden" name="levels_recruiting_for[]" value={lvl} />
+              ))}
             </div>
 
             {/* Events You Will Attend */}
             <div>
-              <label className="block text-base font-bold text-gray-900 mb-3">
+              <label className="field-label">
                 Events You Will Attend <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="options-grid options-grid-3">
                 {EVENTS.map((ev) => (
                   <Pill
                     key={ev}
                     label={ev}
                     active={eventsSelected.includes(ev)}
                     onClick={() => toggleItem(setEventsSelected, ev)}
-                    name="multi_event_selection"
-                    value={ev}
                   />
                 ))}
               </div>
+              {/* Hidden inputs for form submission */}
+              {eventsSelected.map((ev) => (
+                <input key={ev} type="hidden" name="multi_event_selection[]" value={ev} />
+              ))}
             </div>
 
             {/* Preferred Time Slots */}
             <div>
-              <label className="block text-base font-bold text-gray-900 mb-3">
+              <label className="field-label">
                 Preferred Time Slots <span className="text-gray-500 font-normal text-sm">(optional)</span>
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="options-grid options-grid-4">
                 {SLOTS.map((slot) => (
                   <Pill
                     key={slot}
                     label={slot}
                     active={slotsSelected.includes(slot)}
                     onClick={() => toggleItem(setSlotsSelected, slot)}
-                    name="preferred_time_slots"
-                    value={slot}
                   />
                 ))}
               </div>
+              {/* Hidden inputs for form submission */}
+              {slotsSelected.map((slot) => (
+                <input key={slot} type="hidden" name="preferred_time_slots[]" value={slot} />
+              ))}
             </div>
 
-            {/* Highlights - UPDATED */}
+            {/* Highlights */}
             <div>
-              <label className="block text-base font-bold text-gray-900 mb-2">
-                Highlights
-              </label>
+              <label className="field-label">Highlights</label>
               <textarea
                 name="highlights"
                 placeholder="Paste your focus areas"
@@ -406,11 +407,9 @@ export default function Form({ token }: FormProps) {
               />
             </div>
 
-            {/* Deposit Link - UPDATED */}
+            {/* Deposit Link */}
             <div>
-              <label className="block text-base font-bold text-gray-900 mb-2">
-                Deposit Link
-              </label>
+              <label className="field-label">Deposit Link</label>
               <input
                 name="deposit_link"
                 type="url"
@@ -420,7 +419,7 @@ export default function Form({ token }: FormProps) {
             </div>
           </section>
 
-          {/* Documents - UPDATED */}
+          {/* Documents */}
           <section className="space-y-4">
             <h2 className="section-title">Documents</h2>
 
@@ -443,11 +442,9 @@ export default function Form({ token }: FormProps) {
             )}
           </section>
 
-          {/* Remarks - UPDATED */}
+          {/* Remarks */}
           <section>
-            <label className="block text-base font-bold text-gray-900 mb-2">
-              Remarks
-            </label>
+            <label className="field-label">Remarks</label>
             <textarea
               name="remarks"
               placeholder="Paste your additional remarks"
@@ -462,7 +459,7 @@ export default function Form({ token }: FormProps) {
             <span className="text-sm">I consent to communication related to this event.</span>
           </label>
 
-          {error && <p className="text-red-600 text-sm">{error}</p>}
+          {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
 
           <button
             type="submit"
