@@ -1,53 +1,83 @@
 // app/confirm/[token]/page.tsx
 
+import { createClient } from "@supabase/supabase-js";
 import { headers } from "next/headers";
+import Form from "@/components/Form";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export default async function DebugConfirmPage({
+export default async function ConfirmPage({
   params,
-  searchParams,
 }: {
   params: { token: string } | Promise<{ token: string }>;
-  searchParams: Record<string, string | string[] | undefined> | Promise<Record<string, string | string[] | undefined>>;
 }) {
-  // Force request-time execution (CRITICAL in Next.js 16)
+  // Ensure request-time execution (important on Vercel)
   headers();
 
-  // Resolve params safely (Next.js 16 may return Promise)
+  // Resolve params safely (Next.js 16 compatibility)
   const resolvedParams =
     params instanceof Promise ? await params : params;
 
-  const resolvedSearchParams =
-    searchParams instanceof Promise ? await searchParams : searchParams;
+  const token = resolvedParams?.token?.trim();
 
-  const token = resolvedParams?.token ?? null;
+  // 1️⃣ Basic token presence check
+  if (!token) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-600 text-lg">
+        Invalid or missing confirmation link.
+      </div>
+    );
+  }
 
+  // 2️⃣ Environment variable safety check
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.SUPABASE_SERVICE_ROLE_KEY
+  ) {
+    console.error("Missing Supabase environment variables");
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-600 text-lg">
+        Server configuration error. Please contact support.
+      </div>
+    );
+  }
+
+  // 3️⃣ Create Supabase client (SERVER ONLY)
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+
+  // 4️⃣ Validate token against database
+  const { data, error } = await supabase
+    .from("university_participation")
+    .select("invite_token, confirmed_at")
+    .eq("invite_token", token)
+    .single();
+
+  // Token not found
+  if (error || !data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-600 text-lg">
+        Invalid or expired confirmation link.
+      </div>
+    );
+  }
+
+  // Token already used
+  if (data.confirmed_at) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-orange-600 text-lg">
+        This confirmation link has already been used.
+      </div>
+    );
+  }
+
+  // 5️⃣ Token is valid → render the form
   return (
-    <div style={{ padding: 40, fontFamily: "monospace" }}>
-      <h1>🔍 CONFIRM TOKEN — TEMP DEBUG</h1>
-
-      <h2>Expected URL</h2>
-      <pre>
-        /confirm/123abc
-      </pre>
-
-      <h2>Resolved Params</h2>
-      <pre>{JSON.stringify(resolvedParams, null, 2)}</pre>
-
-      <h2>Extracted Token</h2>
-      <pre>{JSON.stringify({ token }, null, 2)}</pre>
-
-      <h2>Search Params</h2>
-      <pre>{JSON.stringify(resolvedSearchParams, null, 2)}</pre>
-
-      <h2>Status</h2>
-      {token ? (
-        <p style={{ color: "green" }}>✅ Token successfully received</p>
-      ) : (
-        <p style={{ color: "red" }}>❌ Token NOT received</p>
-      )}
+    <div className="min-h-screen bg-gray-50">
+      <Form token={token} />
     </div>
   );
 }
